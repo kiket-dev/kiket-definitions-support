@@ -11,6 +11,7 @@ This definition provides a complete customer support system including:
 - **Intake Form**: Public support ticket submission
 - **Board**: Kanban board with priority swimlanes and SLA tracking
 - **Dashboard**: Support metrics, SLA compliance, team performance
+- **Analytics**: Resolution time trends, CSAT scores, agent workload, ticket aging
 - **Automations**: Auto-assignment, SLA warnings, escalation rules
 
 ## Structure
@@ -31,6 +32,9 @@ This definition provides a complete customer support system including:
 │   └── support.yaml
 ├── dashboards/
 │   └── support_dashboard.yaml
+├── analytics/
+│   └── dashboards/
+│       └── support_health.yaml
 └── automations/
     └── support_automations.yaml
 ```
