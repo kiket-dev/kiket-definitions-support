@@ -1,0 +1,167 @@
+model_version: "1.0"
+dashboard:
+  id: support-health
+  name: Support Health
+  description: Track ticket resolution, SLA compliance, and customer satisfaction metrics.
+  widgets:
+    - id: resolution-time-trend
+      type: timeseries
+      title: Average Resolution Time (Hours)
+      query: fct_support_resolution
+      query_config:
+        model: fct_support_resolution
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+        order_by:
+          - resolved_date
+      visualization:
+        x: resolved_date
+        y: avg_resolution_hours
+        series: priority
+
+    - id: sla-compliance-kpi
+      type: kpi
+      title: SLA Compliance Rate
+      query: fct_support_sla
+      query_config:
+        model: fct_support_sla
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+      options:
+        format: percentage
+        comparison:
+          interval: "7d"
+
+    - id: ticket-volume-trend
+      type: timeseries
+      title: Ticket Volume by Day
+      query: fct_support_volume
+      query_config:
+        model: fct_support_volume
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+        order_by:
+          - created_date
+      visualization:
+        x: created_date
+        y: ticket_count
+        series: category
+
+    - id: csat-trend
+      type: timeseries
+      title: Customer Satisfaction Score
+      query: fct_support_satisfaction
+      query_config:
+        model: fct_support_satisfaction
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+        order_by:
+          - survey_date
+      visualization:
+        x: survey_date
+        y: avg_csat_score
+        format: decimal
+
+    - id: category-distribution
+      type: leaderboard
+      title: Tickets by Category
+      query: fct_support_volume
+      query_config:
+        model: fct_support_volume
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+      visualization:
+        group_by: category
+        value: ticket_count
+
+    - id: agent-workload
+      type: table
+      title: Agent Workload (Last 7 Days)
+      query: fct_support_agent_metrics
+      query_config:
+        model: fct_support_agent_metrics
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+        select:
+          - agent_name
+          - tickets_assigned
+          - tickets_resolved
+          - avg_resolution_hours
+          - csat_score
+        order_by:
+          - tickets_resolved DESC
+        limit: 20
+
+    - id: open-tickets-aging
+      type: table
+      title: Open Tickets by Age
+      query: fct_support_aging
+      query_config:
+        model: fct_support_aging
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+          status: open
+        select:
+          - age_bucket
+          - ticket_count
+          - oldest_ticket_days
+        order_by:
+          - age_bucket_order
+
+  alerts:
+    - query: fct_support_sla
+      query_config:
+        model: fct_support_sla
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+      condition: sla_compliance_rate < 0.90
+      notify_roles:
+        - manager
+      message: "SLA compliance has dropped below 90%"
+
+    - query: fct_support_resolution
+      query_config:
+        model: fct_support_resolution
+        parameters:
+          - name: project_id
+            type: integer
+            required: true
+        filters:
+          project_id: ":project_id"
+          priority: critical
+      condition: avg_resolution_hours > 4
+      notify_roles:
+        - manager
+      message: "Critical ticket resolution time exceeds 4 hours"
