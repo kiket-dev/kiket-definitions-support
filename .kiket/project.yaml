@@ -1,0 +1,13 @@
+model_version: "1.0"
+project:
+  id: support
+  name: Customer Support
+  version: 1.0.0
+  description: Customer support ticketing and management workflows.
+
+  extensions:
+    required:
+      - email
+    optional:
+      - slack
+      - teams

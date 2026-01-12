@@ -1,0 +1,130 @@
+model_version: "1.0"
+dashboard:
+  id: support-dashboard
+  name: Support Dashboard
+  description: Customer support team performance and metrics.
+  version: 1.0.0
+
+  layout:
+    columns: 4
+
+  widgets:
+    # Row 1: Key Metrics
+    - id: open-count
+      type: metric
+      title: Open Tickets
+      position: {row: 1, col: 1}
+      query:
+        issue_types: [support_ticket]
+        statuses: [submitted, triaging, in_progress, waiting_customer]
+        aggregate: count
+
+    - id: new-today
+      type: metric
+      title: New Today
+      position: {row: 1, col: 2}
+      query:
+        issue_types: [support_ticket]
+        created_date: today
+        aggregate: count
+
+    - id: resolved-today
+      type: metric
+      title: Resolved Today
+      position: {row: 1, col: 3}
+      query:
+        issue_types: [support_ticket]
+        statuses: [resolved]
+        resolved_date: today
+        aggregate: count
+
+    - id: sla-breached
+      type: metric
+      title: SLA Breached
+      position: {row: 1, col: 4}
+      query:
+        issue_types: [support_ticket]
+        sla_status: breached
+        aggregate: count
+      thresholds:
+        warning: 1
+        critical: 5
+
+    # Row 2: By Priority & Category
+    - id: by-priority
+      type: pie_chart
+      title: By Priority
+      position: {row: 2, col: 1, span: 2}
+      query:
+        issue_types: [support_ticket]
+        statuses: [submitted, triaging, in_progress, waiting_customer]
+        group_by: custom_fields.priority
+
+    - id: by-category
+      type: bar_chart
+      title: By Category
+      position: {row: 2, col: 3, span: 2}
+      query:
+        issue_types: [support_ticket]
+        statuses: [submitted, triaging, in_progress, waiting_customer]
+        group_by: custom_fields.category
+
+    # Row 3: SLA & Response Times
+    - id: sla-status
+      type: stacked_bar
+      title: SLA Status
+      position: {row: 3, col: 1, span: 2}
+      query:
+        issue_types: [support_ticket]
+        group_by: sla_status
+        stack_by: custom_fields.priority
+
+    - id: avg-response-time
+      type: metric
+      title: Avg First Response
+      position: {row: 3, col: 3}
+      query:
+        issue_types: [support_ticket]
+        date_range: last_7_days
+        aggregate: avg
+        field: first_response_time
+      format: duration
+
+    - id: avg-resolution-time
+      type: metric
+      title: Avg Resolution Time
+      position: {row: 3, col: 4}
+      query:
+        issue_types: [support_ticket]
+        date_range: last_7_days
+        aggregate: avg
+        field: resolution_time
+      format: duration
+
+    # Row 4: Team & Trends
+    - id: by-assignee
+      type: bar_chart
+      title: Tickets by Agent
+      position: {row: 4, col: 1, span: 2}
+      query:
+        issue_types: [support_ticket]
+        statuses: [in_progress, waiting_customer]
+        group_by: assignee
+
+    - id: volume-trend
+      type: line_chart
+      title: Volume Trend (14 Days)
+      position: {row: 4, col: 3, span: 2}
+      query:
+        issue_types: [support_ticket]
+        date_range: last_14_days
+        aggregate: count
+        group_by: created_date
+        interval: day
+        series:
+          - name: Created
+            field: created_at
+          - name: Resolved
+            field: resolved_at
+
+  refresh_interval: 60  # 1 minute

@@ -1,0 +1,146 @@
+model_version: "1.0"
+workflow:
+  id: support
+  name: Customer Support
+  version: 1.0.0
+  description: Customer support ticket lifecycle with AI triage and SLA tracking.
+
+states:
+  submitted:
+    type: initial
+    category: pending
+    metadata:
+      label: Submitted
+      color: secondary
+      icon: "📥"
+      description: New ticket awaiting triage.
+    on_enter:
+      - action: ai_analyze
+        agent: ai.support.categorize
+        store_result_in: custom_fields.category
+      - action: ai_analyze
+        agent: ai.support.detect_duplicates
+        store_result_in: custom_fields.duplicate_candidates
+      - action: notify
+        recipients:
+          roles: [support]
+        message: "New support ticket: ${issue.title}"
+        level: info
+
+  triaging:
+    type: active
+    category: active
+    metadata:
+      label: Triaging
+      color: info
+      icon: "🔍"
+      description: Ticket being evaluated and assigned.
+    sla:
+      warning: 4h
+      breach: 8h
+      business_hours: true
+
+  in_progress:
+    type: active
+    category: active
+    metadata:
+      label: In Progress
+      color: primary
+      icon: "⚙️"
+      description: Actively being worked on.
+    on_enter:
+      - action: ai_suggest
+        agent: ai.support.suggest_resolution
+        store_result_in: comment
+      - action: notify
+        recipients:
+          fields: [custom_fields.customer_email]
+        message: "Your ticket #${issue.id} is now being worked on."
+        level: info
+    sla:
+      warning: 24h
+      breach: 48h
+      business_hours: true
+
+  waiting_customer:
+    type: active
+    category: blocked
+    metadata:
+      label: Waiting on Customer
+      color: warning
+      icon: "⏳"
+      description: Awaiting customer response.
+    sla:
+      warning: 72h
+      breach: 168h  # 7 days
+      pause_on_state: true  # SLA pauses while waiting
+
+  resolved:
+    type: final
+    category: completed
+    metadata:
+      label: Resolved
+      color: success
+      icon: "✅"
+      description: Ticket resolved.
+    on_enter:
+      - action: notify
+        recipients:
+          fields: [custom_fields.customer_email]
+        message: "Your ticket #${issue.id} has been resolved. Please let us know if you need further assistance."
+        level: info
+      - action: webhook
+        url: "${env.CSAT_SURVEY_WEBHOOK}"
+        method: POST
+        body:
+          ticket_id: "${issue.id}"
+          customer_email: "${issue.custom_fields.customer_email}"
+
+  closed:
+    type: final
+    category: completed
+    metadata:
+      label: Closed
+      color: secondary
+      icon: "📁"
+      description: Ticket closed (no response or duplicate).
+
+transitions:
+  - from: submitted
+    to: triaging
+    name: Start Triage
+
+  - from: triaging
+    to: in_progress
+    name: Assign & Start
+    conditions:
+      - field: assignee
+        operator: is_present
+
+  - from: triaging
+    to: closed
+    name: Close as Duplicate
+    conditions:
+      - field: custom_fields.category
+        operator: "="
+        value: duplicate
+
+  - from: in_progress
+    to: waiting_customer
+    name: Request Info
+
+  - from: in_progress
+    to: resolved
+    name: Resolve
+
+  - from: waiting_customer
+    to: in_progress
+    name: Customer Responded
+
+  - from: waiting_customer
+    to: closed
+    name: Auto-Close (No Response)
+
+  - from: resolved
+    to: in_progress
+    name: Reopen

@@ -1,0 +1,79 @@
+model_version: "1.0"
+board:
+  id: support-board
+  name: Support Queue
+  description: Customer support ticket management board.
+  version: 1.0.0
+
+  filters:
+    issue_types:
+      - support_ticket
+    workflows:
+      - support
+
+  columns:
+    - id: new
+      name: New
+      states:
+        - submitted
+      wip_limit: null
+      color: secondary
+
+    - id: triaging
+      name: Triaging
+      states:
+        - triaging
+      wip_limit: 10
+      color: info
+
+    - id: in_progress
+      name: In Progress
+      states:
+        - in_progress
+      wip_limit: 15
+      color: primary
+
+    - id: waiting
+      name: Waiting on Customer
+      states:
+        - waiting_customer
+      wip_limit: null
+      color: warning
+
+    - id: resolved
+      name: Resolved
+      states:
+        - resolved
+      wip_limit: null
+      color: success
+
+  swimlanes:
+    enabled: true
+    field: custom_fields.priority
+    values:
+      - value: critical
+        label: "🔴 Critical"
+      - value: high
+        label: "🟠 High"
+      - value: medium
+        label: "🟡 Medium"
+      - value: low
+        label: "🟢 Low"
+
+  card_fields:
+    - title
+    - custom_fields.priority
+    - custom_fields.category
+    - assignee
+    - sla_status
+
+  quick_filters:
+    - field: assignee
+      label: My Tickets
+      value: "@me"
+    - field: custom_fields.priority
+      label: Critical
+      value: critical
+    - field: sla_status
+      label: SLA Breached
+      value: breached

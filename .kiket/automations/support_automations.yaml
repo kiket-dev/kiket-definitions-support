@@ -1,0 +1,91 @@
+model_version: "1.0"
+automations:
+  - id: auto-assign-support
+    name: Auto-assign Support Tickets
+    description: Automatically assign support tickets based on category and workload.
+    version: 1.0.0
+    enabled: true
+
+    trigger:
+      event: issue.created
+      conditions:
+        - field: issue_type
+          equals: support_ticket
+
+    actions:
+      - type: ai_action
+        agent: ai.support.categorize
+        store_result_in: custom_fields.category
+      - type: auto_assign
+        strategy: round_robin
+        team: support
+        consider_workload: true
+      - type: set_field
+        field: status
+        value: triaging
+
+  - id: support-sla-warning
+    name: Support SLA Warning
+    description: Notify when support ticket approaches SLA breach.
+    version: 1.0.0
+    enabled: true
+
+    trigger:
+      event: sla.warning
+      conditions:
+        - field: issue_type
+          equals: support_ticket
+
+    actions:
+      - type: notify
+        recipients:
+          user: assignee
+          roles: [support_lead]
+        message: "⚠️ SLA warning: Ticket #{{issue.id}} approaching breach ({{sla.time_remaining}} remaining)"
+        level: warning
+      - type: add_label
+        label: sla-at-risk
+
+  - id: support-escalate-critical
+    name: Escalate Critical Tickets
+    description: Auto-escalate critical tickets to support lead.
+    version: 1.0.0
+    enabled: true
+
+    trigger:
+      event: issue.updated
+      conditions:
+        - field: issue_type
+          equals: support_ticket
+        - field: custom_fields.priority
+          equals: critical
+
+    actions:
+      - type: notify
+        recipients:
+          roles: [support_lead, engineering_lead]
+        message: "🚨 Critical support ticket: {{issue.title}} (#{{issue.id}})"
+        level: critical
+      - type: add_watcher
+        roles: [support_lead]
+
+  - id: support-auto-close
+    name: Auto-close Resolved Tickets
+    description: Close tickets after 7 days in resolved state with no response.
+    version: 1.0.0
+    enabled: true
+
+    trigger:
+      event: schedule
+      cron: "0 9 * * *"  # Daily at 9 AM
+
+    query:
+      issue_types: [support_ticket]
+      status: resolved
+      last_updated_before: 7d
+
+    actions:
+      - type: transition
+        to: closed
+      - type: comment
+        body: "Ticket auto-closed after 7 days with no response. Reopen if you need further assistance."

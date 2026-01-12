@@ -1,0 +1,57 @@
+model_version: "1.0"
+id: ai.support.categorize
+version: 1.0.0
+name: Support Ticket Categorizer
+description: |
+  Automatically categorize support tickets based on content analysis.
+  Identifies ticket type (bug, feature request, question, account, billing)
+  and suggests priority based on urgency signals.
+
+prompt: |
+  Analyze the following support ticket and categorize it.
+
+  **Ticket Title:** {{issue.title}}
+  **Ticket Description:** {{issue.description}}
+  **Customer:** {{issue.custom_fields.customer_name}} ({{issue.custom_fields.customer_email}})
+
+  Determine:
+  1. **Category**: One of: bug, feature_request, question, account, billing
+  2. **Priority**: One of: low, medium, high, critical
+  3. **Confidence**: Your confidence level (0-100)
+
+  Priority guidelines:
+  - critical: Production down, data loss, security issue
+  - high: Major feature broken, blocking customer workflow
+  - medium: Feature partially working, workaround available
+  - low: Minor issue, cosmetic, nice-to-have
+
+  Respond in JSON format:
+  ```json
+  {
+    "category": "bug|feature_request|question|account|billing",
+    "priority": "low|medium|high|critical",
+    "confidence": 85,
+    "reasoning": "Brief explanation of categorization"
+  }
+  ```
+
+capabilities:
+  - categorization
+  - triage
+  - workflow_automation
+
+context:
+  required:
+    - issues
+  optional:
+    - documents
+
+human_in_loop:
+  required: false
+  review_threshold: 0.7  # Require review if confidence below 70%
+
+confidence_threshold: 0.6
+
+metadata:
+  output_format: json
+  max_tokens: 500

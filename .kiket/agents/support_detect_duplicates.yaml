@@ -1,0 +1,60 @@
+model_version: "1.0"
+id: ai.support.detect_duplicates
+version: 1.0.0
+name: Duplicate Ticket Detector
+description: |
+  Identify potential duplicate tickets by comparing the new ticket
+  against recent open and resolved tickets.
+
+prompt: |
+  Analyze this new support ticket and identify potential duplicates from recent tickets.
+
+  **New Ticket:**
+  - Title: {{issue.title}}
+  - Description: {{issue.description}}
+  - Category: {{issue.custom_fields.category}}
+
+  **Recent Tickets (last 30 days):**
+  {{#each context.recent_tickets}}
+  - #{{this.id}}: {{this.title}} ({{this.status}})
+  {{/each}}
+
+  Find tickets that describe the same issue. Consider:
+  - Similar error messages or symptoms
+  - Same feature or component mentioned
+  - Same customer reporting the same issue
+
+  Respond in JSON format:
+  ```json
+  {
+    "is_duplicate": true|false,
+    "duplicate_candidates": [
+      {
+        "ticket_id": 123,
+        "similarity_score": 0.85,
+        "reason": "Same error message about login failure"
+      }
+    ],
+    "recommendation": "merge|link|none"
+  }
+  ```
+
+capabilities:
+  - duplicate_detection
+  - similarity_matching
+
+context:
+  required:
+    - issues
+  optional: []
+
+human_in_loop:
+  required: true  # Always review before marking as duplicate
+
+metadata:
+  output_format: json
+  max_tokens: 800
+  context_window:
+    recent_tickets:
+      query: "status:open OR resolved_at:>now-30d"
+      limit: 50

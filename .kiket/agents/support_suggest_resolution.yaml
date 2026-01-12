@@ -1,0 +1,64 @@
+model_version: "1.0"
+id: ai.support.suggest_resolution
+version: 1.0.0
+name: Resolution Suggester
+description: |
+  Suggest resolution steps based on ticket content and similar resolved tickets.
+  Provides actionable guidance for support agents.
+
+prompt: |
+  Suggest resolution steps for this support ticket.
+
+  **Ticket:**
+  - Title: {{issue.title}}
+  - Description: {{issue.description}}
+  - Category: {{issue.custom_fields.category}}
+  - Priority: {{issue.custom_fields.priority}}
+
+  **Similar Resolved Tickets:**
+  {{#each context.similar_resolved}}
+  ---
+  Ticket #{{this.id}}: {{this.title}}
+  Resolution: {{this.resolution_notes}}
+  Time to resolve: {{this.resolution_time}}
+  ---
+  {{/each}}
+
+  **Knowledge Base Articles:**
+  {{#each context.knowledge_articles}}
+  - {{this.title}}: {{this.summary}}
+  {{/each}}
+
+  Provide:
+  1. **Suggested Resolution Steps**: Numbered list of actions
+  2. **Estimated Time**: How long this typically takes
+  3. **Relevant Resources**: Links to docs or articles
+  4. **Escalation Criteria**: When to escalate to engineering
+
+  Format as markdown suitable for a support agent.
+
+capabilities:
+  - resolution_suggestion
+  - knowledge_retrieval
+
+context:
+  required:
+    - issues
+  optional:
+    - documents
+
+human_in_loop:
+  required: false
+
+metadata:
+  output_format: markdown
+  max_tokens: 1500
+  store_as: comment
+  context_window:
+    similar_resolved:
+      query: "status:resolved category:{{issue.custom_fields.category}}"
+      limit: 5
+      similarity_threshold: 0.7
+    knowledge_articles:
+      source: knowledge_base
+      limit: 3
