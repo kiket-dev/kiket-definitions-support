@@ -1,36 +1,24 @@
 model_version: "1.0"
 
 issue_types:
-  support_ticket:
-    name: Support Ticket
-    description: Customer support request or inquiry
-    icon: "🎫"
-    color: "#3B82F6"
-    workflow: support
-    fields:
-      - key: category
-        type: enum
-        label: Category
-        options: [bug, feature_request, question, account, billing]
-        required: true
-      - key: priority
-        type: enum
-        label: Priority
-        options: [low, medium, high, critical]
-        default: medium
-      - key: channel
-        type: enum
-        label: Source Channel
-        options: [email, chat, phone, form, social]
-      - key: customer_email
-        type: email
-        label: Customer Email
-        required: true
-      - key: customer_name
-        type: string
-        label: Customer Name
-      - key: csat_score
-        type: number
-        label: CSAT Score
-        min: 1
-        max: 5
+  - key: support_ticket
+    label: Support Ticket
+    allow_children: false
+    color: primary
+    icon: ticket
+    position: 0
+    active: true
+  - key: incident
+    label: Incident
+    allow_children: false
+    color: danger
+    icon: exclamation-triangle
+    position: 1
+    active: true
+  - key: feature_request
+    label: Feature Request
+    allow_children: false
+    color: success
+    icon: lightbulb
+    position: 2
+    active: true
