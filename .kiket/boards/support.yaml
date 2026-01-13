@@ -2,78 +2,82 @@ model_version: "1.0"
 board:
   id: support-board
   name: Support Queue
+  type: kanban
   description: Customer support ticket management board.
-  version: 1.0.0
+  workflow: support
 
-  filters:
-    issue_types:
-      - support_ticket
-    workflows:
-      - support
+filters:
+  issue_types:
+    - support_ticket
+  workflows:
+    - support
 
-  columns:
-    - id: new
-      name: New
-      states:
-        - submitted
-      wip_limit: null
-      color: secondary
+columns:
+  - key: new
+    name: New
+    states:
+      - submitted
+    color: secondary
 
-    - id: triaging
-      name: Triaging
-      states:
-        - triaging
-      wip_limit: 10
-      color: info
+  - key: triaging
+    name: Triaging
+    states:
+      - triaging
+    wip_limit: 10
+    color: info
 
-    - id: in_progress
-      name: In Progress
-      states:
-        - in_progress
-      wip_limit: 15
-      color: primary
+  - key: in_progress
+    name: In Progress
+    states:
+      - in_progress
+    wip_limit: 15
+    color: primary
 
-    - id: waiting
-      name: Waiting on Customer
-      states:
-        - waiting_customer
-      wip_limit: null
-      color: warning
+  - key: waiting
+    name: Waiting on Customer
+    states:
+      - waiting_customer
+    color: warning
 
-    - id: resolved
-      name: Resolved
-      states:
-        - resolved
-      wip_limit: null
-      color: success
+  - key: resolved
+    name: Resolved
+    states:
+      - resolved
+    color: success
 
-  swimlanes:
-    enabled: true
-    field: custom_fields.priority
-    values:
-      - value: critical
-        label: "🔴 Critical"
-      - value: high
-        label: "🟠 High"
-      - value: medium
-        label: "🟡 Medium"
-      - value: low
-        label: "🟢 Low"
+swimlanes:
+  enabled: true
+  field: custom_fields.priority
+  values:
+    - value: critical
+      label: "🔴 Critical"
+    - value: high
+      label: "🟠 High"
+    - value: medium
+      label: "🟡 Medium"
+    - value: low
+      label: "🟢 Low"
 
-  card_fields:
-    - title
-    - custom_fields.priority
-    - custom_fields.category
-    - assignee
-    - sla_status
+card_template:
+  size: compact
+  fields:
+    primary:
+      - title
+      - assignee
+    secondary:
+      - custom_fields.priority
+      - custom_fields.category
+      - sla_status
+  badges:
+    - type: comments_count
 
-  quick_filters:
-    - field: assignee
-      label: My Tickets
-      value: "@me"
-    - field: custom_fields.priority
-      label: Critical
-      value: critical
-    - field: sla_status
-      label: SLA Breached
-      value: breached
+quick_filters:
+  - field: assignee
+    label: My Tickets
+    value: "@me"
+  - field: custom_fields.priority
+    label: Critical
+    value: critical
+  - field: sla_status
+    label: SLA Breached
+    value: breached
