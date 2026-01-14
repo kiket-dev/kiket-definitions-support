@@ -5,6 +5,15 @@ project:
   version: 1.0.0
   description: Customer support ticketing and management workflows.
 
+  team:
+    roles:
+      - name: agent
+        description: Support agent handling customer inquiries
+      - name: specialist
+        description: Senior agent handling escalated or complex issues
+      - name: supervisor
+        description: Team supervisor managing agents and quality
+
   extensions:
     required:
       - email
