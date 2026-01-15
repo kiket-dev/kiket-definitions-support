@@ -48,7 +48,6 @@ context:
 
 human_in_loop:
   required: false
-  review_threshold: 0.7  # Require review if confidence below 70%
 
 confidence_threshold: 0.6
 
