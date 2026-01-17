@@ -1,0 +1,51 @@
+# Inbound Email Configuration for Support Definition
+# Enables email-to-issue functionality for support ticketing
+
+inbound_email:
+  enabled: true
+
+  # Default email address mappings
+  # Maps email addresses to project issue creation settings
+  mappings:
+    - email_address: support
+      description: "General support inquiries"
+      issue_defaults:
+        issue_type: Ticket
+        priority: medium
+        labels:
+          - support
+          - inbound
+      sender_policy: open  # Allow any sender
+      auto_reply: true
+      auto_reply_template: confirmation
+
+    - email_address: urgent
+      description: "Urgent support requests"
+      issue_defaults:
+        issue_type: Ticket
+        priority: high
+        labels:
+          - support
+          - urgent
+      sender_policy: known_domains  # Only from known customer domains
+      auto_reply: true
+      auto_reply_template: confirmation
+
+    - email_address: feedback
+      description: "Customer feedback and suggestions"
+      issue_defaults:
+        issue_type: Feedback
+        priority: low
+        labels:
+          - feedback
+      sender_policy: open
+      auto_reply: true
+      auto_reply_template: feedback_received
+
+  # Sender policies:
+  # - open: Accept from any sender
+  # - known_users: Only from registered organization users
+  # - known_domains: Only from domains with registered users
+
+  # Templates are stored in .kiket/email_templates/
+  templates_path: email_templates

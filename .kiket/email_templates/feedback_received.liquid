@@ -1,0 +1,17 @@
+<p>Hello {{ inbound_email.from_name | default: "there" }},</p>
+
+<p>Thank you for sharing your feedback with {{ organization.name }}! We truly appreciate you taking the time to help us improve.</p>
+
+{% if issue %}
+<p>
+  <strong>Reference:</strong> {{ issue.key }}<br>
+  <strong>Subject:</strong> {{ issue.title }}
+</p>
+{% endif %}
+
+<p>Your feedback has been logged and will be reviewed by our product team. While we may not be able to respond to every submission individually, please know that your input is valuable and helps shape our roadmap.</p>
+
+<p>
+  Best regards,<br>
+  {{ organization.name }} Team
+</p>

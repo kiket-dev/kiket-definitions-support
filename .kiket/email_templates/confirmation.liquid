@@ -1,0 +1,21 @@
+<p>Hello {{ inbound_email.from_name | default: "there" }},</p>
+
+<p>Thank you for contacting {{ organization.name }} Support. We have received your request and created a ticket to track it.</p>
+
+{% if issue %}
+<p>
+  <strong>Ticket:</strong> {{ issue.key }}<br>
+  <strong>Subject:</strong> {{ issue.title }}
+</p>
+
+<p>
+  <a href="{{ issue.url }}" style="display: inline-block; padding: 10px 20px; background-color: #4F46E5; color: white; text-decoration: none; border-radius: 6px;">View Your Ticket</a>
+</p>
+{% endif %}
+
+<p>Our support team will review your request and respond as soon as possible. You can reply to this email to add more information to your ticket.</p>
+
+<p>
+  Best regards,<br>
+  {{ organization.name }} Support Team
+</p>
