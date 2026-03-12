@@ -1,5 +1,5 @@
 model_version: "1.0"
-intake:
+intake_form:
   id: support-ticket
   name: Submit Support Request
   description: Submit a support request and we'll get back to you within 24 hours.
