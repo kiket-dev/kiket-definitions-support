@@ -20,3 +20,59 @@ project:
     optional:
       - slack
       - teams
+
+  seed_data:
+    issues:
+      - title: Cannot export invoices to PDF since last update
+        description: Multiple customers report that the invoice export button returns a 500 error. Affects all billing plans.
+        issue_type: support_ticket
+        status: in_progress
+        priority: critical
+        labels:
+          - billing
+          - regression
+
+      - title: Request to add dark mode to the dashboard
+        description: Several enterprise customers have asked for a dark mode option to reduce eye strain during extended use.
+        issue_type: feature_request
+        status: submitted
+        priority: low
+        labels:
+          - ux
+          - enhancement
+
+      - title: SSO login loop on Chrome after IdP timeout
+        description: Users on Chrome experience an infinite redirect loop when their SAML session expires mid-workflow.
+        issue_type: incident
+        status: triaging
+        priority: high
+        labels:
+          - authentication
+          - sso
+
+      - title: How to configure webhook retry policies
+        description: Customer needs guidance on setting up custom retry intervals for failed webhook deliveries in their integration.
+        issue_type: support_ticket
+        status: waiting_customer
+        priority: medium
+        labels:
+          - integrations
+          - how-to
+
+      - title: Data import fails silently for CSV files with BOM
+        description: CSV files exported from Excel with a UTF-8 BOM character cause the importer to skip rows without any error message.
+        issue_type: support_ticket
+        status: resolved
+        priority: medium
+        labels:
+          - data-import
+          - bug
+
+      - title: API rate limit errors not returned with Retry-After header
+        description: When customers hit rate limits, the 429 response is missing the Retry-After header, making it hard to implement backoff.
+        issue_type: feature_request
+        status: triaging
+        priority: medium
+        labels:
+          - api
+          - developer-experience
