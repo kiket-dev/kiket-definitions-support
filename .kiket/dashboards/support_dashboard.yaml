@@ -15,7 +15,7 @@ dashboard:
       title: Open Tickets
       position: {row: 1, col: 1}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         statuses: [submitted, triaging, in_progress, waiting_customer]
         aggregate: count
 
@@ -24,7 +24,7 @@ dashboard:
       title: New Today
       position: {row: 1, col: 2}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         created_date: today
         aggregate: count
 
@@ -33,7 +33,7 @@ dashboard:
       title: Resolved Today
       position: {row: 1, col: 3}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         statuses: [resolved]
         resolved_date: today
         aggregate: count
@@ -43,7 +43,7 @@ dashboard:
       title: SLA Breached
       position: {row: 1, col: 4}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         sla_status: breached
         aggregate: count
       thresholds:
@@ -56,7 +56,7 @@ dashboard:
       title: By Priority
       position: {row: 2, col: 1, span: 2}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         statuses: [submitted, triaging, in_progress, waiting_customer]
         group_by: custom_fields.priority
 
@@ -65,7 +65,7 @@ dashboard:
       title: By Category
       position: {row: 2, col: 3, span: 2}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         statuses: [submitted, triaging, in_progress, waiting_customer]
         group_by: custom_fields.category
 
@@ -75,7 +75,7 @@ dashboard:
       title: SLA Status
       position: {row: 3, col: 1, span: 2}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         group_by: sla_status
         stack_by: custom_fields.priority
 
@@ -84,7 +84,7 @@ dashboard:
       title: Avg First Response
       position: {row: 3, col: 3}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         date_range: last_7_days
         aggregate: avg
         field: first_response_time
@@ -95,7 +95,7 @@ dashboard:
       title: Avg Resolution Time
       position: {row: 3, col: 4}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         date_range: last_7_days
         aggregate: avg
         field: resolution_time
@@ -107,7 +107,7 @@ dashboard:
       title: Tickets by Agent
       position: {row: 4, col: 1, span: 2}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         statuses: [in_progress, waiting_customer]
         group_by: assignee
 
@@ -116,7 +116,7 @@ dashboard:
       title: Volume Trend (14 Days)
       position: {row: 4, col: 3, span: 2}
       query:
-        issue_types: [support_ticket]
+        case_types: [support_ticket]
         date_range: last_14_days
         aggregate: count
         group_by: created_date

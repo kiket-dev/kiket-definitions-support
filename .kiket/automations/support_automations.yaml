@@ -7,9 +7,9 @@ automations:
     enabled: true
 
     trigger:
-      event: issue.created
+      event: case.created
       conditions:
-        - field: issue_type
+        - field: case_type
           equals: support_ticket
 
     actions:
@@ -33,7 +33,7 @@ automations:
     trigger:
       event: sla.warning
       conditions:
-        - field: issue_type
+        - field: case_type
           equals: support_ticket
 
     actions:
@@ -53,9 +53,9 @@ automations:
     enabled: true
 
     trigger:
-      event: issue.updated
+      event: case.updated
       conditions:
-        - field: issue_type
+        - field: case_type
           equals: support_ticket
         - field: custom_fields.priority
           equals: critical
@@ -80,7 +80,7 @@ automations:
       cron: "0 9 * * *"  # Daily at 9 AM
 
     query:
-      issue_types: [support_ticket]
+      case_types: [support_ticket]
       status: resolved
       last_updated_before: 7d
 

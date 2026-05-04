@@ -7,7 +7,7 @@ board:
   workflow: support
 
 filters:
-  issue_types:
+  case_types:
     - support_ticket
   workflows:
     - support

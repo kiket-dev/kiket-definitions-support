@@ -10,7 +10,7 @@ inbound_email:
     - email_address: support
       description: "General support inquiries"
       issue_defaults:
-        issue_type: Ticket
+        case_type: Ticket
         priority: medium
         labels:
           - support
@@ -22,7 +22,7 @@ inbound_email:
     - email_address: urgent
       description: "Urgent support requests"
       issue_defaults:
-        issue_type: Ticket
+        case_type: Ticket
         priority: high
         labels:
           - support
@@ -34,7 +34,7 @@ inbound_email:
     - email_address: feedback
       description: "Customer feedback and suggestions"
       issue_defaults:
-        issue_type: Feedback
+        case_type: Feedback
         priority: low
         labels:
           - feedback
