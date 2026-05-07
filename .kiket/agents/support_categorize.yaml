@@ -13,9 +13,9 @@ agent:
       content: |
         Analyze the following support ticket and categorize it.
 
-        **Ticket Title:** {{issue.title}}
-        **Ticket Description:** {{issue.description}}
-        **Customer:** {{issue.custom_fields.customer_name}} ({{issue.custom_fields.customer_email}})
+        **Ticket Title:** {{case.title}}
+        **Ticket Description:** {{case.description}}
+        **Customer:** {{case.custom_fields.customer_name}} ({{case.custom_fields.customer_email}})
 
         Determine:
         1. **Category**: One of: bug, feature_request, question, account, billing

@@ -116,7 +116,7 @@ intake_form:
     message: |
       We've received your support request and will get back to you within 24 hours.
 
-      **Your ticket number:** #{{issue.id}}
+      **Your ticket number:** #{{case.id}}
 
       You'll receive email updates as we work on your request.
     show_ticket_link: true

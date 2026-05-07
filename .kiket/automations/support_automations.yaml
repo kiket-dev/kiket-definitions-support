@@ -41,7 +41,7 @@ automations:
         recipients:
           user: assignee
           roles: [support_lead]
-        message: "⚠️ SLA warning: Ticket #{{issue.id}} approaching breach ({{sla.time_remaining}} remaining)"
+        message: "⚠️ SLA warning: Ticket #{{case.id}} approaching breach ({{sla.time_remaining}} remaining)"
         level: warning
       - type: add_label
         label: sla-at-risk
@@ -64,7 +64,7 @@ automations:
       - type: notify
         recipients:
           roles: [support_lead, engineering_lead]
-        message: "🚨 Critical support ticket: {{issue.title}} (#{{issue.id}})"
+        message: "🚨 Critical support ticket: {{case.title}} (#{{case.id}})"
         level: critical
       - type: add_watcher
         roles: [support_lead]

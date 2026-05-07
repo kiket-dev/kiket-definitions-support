@@ -13,10 +13,10 @@ agent:
         Suggest resolution steps for this support ticket.
 
         **Ticket:**
-        - Title: {{issue.title}}
-        - Description: {{issue.description}}
-        - Category: {{issue.custom_fields.category}}
-        - Priority: {{issue.custom_fields.priority}}
+        - Title: {{case.title}}
+        - Description: {{case.description}}
+        - Category: {{case.custom_fields.category}}
+        - Priority: {{case.custom_fields.priority}}
 
         **Similar Resolved Tickets:**
         {{#each context.similar_resolved}}

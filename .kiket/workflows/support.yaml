@@ -24,7 +24,7 @@ states:
       - action: notify
         recipients:
           roles: [support]
-        message: "New support ticket: ${issue.title}"
+        message: "New support ticket: ${case.title}"
         level: info
 
   triaging:
@@ -55,7 +55,7 @@ states:
       - action: notify
         recipients:
           fields: [custom_fields.customer_email]
-        message: "Your ticket #${issue.id} is now being worked on."
+        message: "Your ticket #${case.id} is now being worked on."
         level: info
     sla:
       warning: 24h
@@ -87,14 +87,14 @@ states:
       - action: notify
         recipients:
           fields: [custom_fields.customer_email]
-        message: "Your ticket #${issue.id} has been resolved. Please let us know if you need further assistance."
+        message: "Your ticket #${case.id} has been resolved. Please let us know if you need further assistance."
         level: info
       - action: webhook
         url: "${env.CSAT_SURVEY_WEBHOOK}"
         method: POST
         body:
-          ticket_id: "${issue.id}"
-          customer_email: "${issue.custom_fields.customer_email}"
+          ticket_id: "${case.id}"
+          customer_email: "${case.custom_fields.customer_email}"
 
   closed:
     type: final

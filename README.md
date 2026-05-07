@@ -11,14 +11,14 @@ This definition provides a complete customer support system including:
 - **Intake Form**: Public support ticket submission
 - **Board**: Kanban board with priority swimlanes and SLA tracking
 - **Dashboard**: Support metrics, SLA compliance, team performance
-- **Analytics**: Resolution time trends, CSAT scores, agent workload, ticket aging
+- **Dashboards**: Resolution time trends, CSAT scores, agent workload, ticket aging
 - **Automations**: Auto-assignment, SLA warnings, escalation rules
 
 ## Structure
 
 ```
 .kiket/
-├── project.yaml           # Definition metadata
+├── workspace.yaml           # Definition metadata
 ├── case_types.yaml        # Support ticket case type
 ├── workflows/
 │   └── support.yaml       # Ticket lifecycle workflow
